@@ -6,33 +6,32 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    //Crear un hilo
+    sthread = new MyThread(SensorQueue,Smutex);
+    QObject::connect(sthread,&MyThread::QueueEmpty,this,&MainWindow::UpdateSensor);
+    sthread->start();
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+    sthread->wait();
+    delete sthread;
 }
 
 void MainWindow::UpdateSensor()
 {
-    //Iniciar el nuevo hilo
-    MyThread sthread(SensorQueue,EmptyQueue,Mutex);
-    sthread.start();
 
-    Mutex.lock();
-    if (SensorQueue.size()==0)
-    {
-        EmptyQueue.wait(&Mutex);
-    }
-    Mutex.unlock();
-    Mutex.lock();
-    QString sensordata;
+    Smutex.lock();
+    QString sensordata = ui->SensorLabel->text();
     for(int i=0; i<SensorQueue.size();i++)
     {
-        sensordata.append(SensorQueue[i].first).append(" ").append(SensorQueue[i].second);
+       sensordata.append(SensorQueue[i]);
     }
     ui->SensorLabel->setText(sensordata);
     SensorQueue.clear();
-    Mutex.unlock();
-    sthread.sleep(1000);
+    Smutex.unlock();
+
 }
+

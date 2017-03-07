@@ -8,18 +8,24 @@
 #include <QWaitCondition>
 #include <QMutex>
 #include <QDir>
+#include <QFile>
+
 
 class MyThread : public QThread
 {
+    Q_OBJECT
+
     public:
-        MyThread(QQueue <QPair<QString,QString>> &queue, QWaitCondition &empty, QMutex &mutex);
+        MyThread(QQueue <QString> &queue, QMutex &mutex);
 
     protected:
         void run();
 
+    signals:
+        void QueueEmpty();
+
     private:
-        QQueue <QPair<QString,QString>>* DataQueue;
-        QWaitCondition* EmptyQueue;
+        QQueue <QString>* DataQueue;
         QMutex* Mutex;
 };
 

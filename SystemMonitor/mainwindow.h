@@ -19,9 +19,9 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QQueue <QPair<QString,QString>> SensorQueue;
-    QWaitCondition EmptyQueue;
-    QMutex Mutex;
+    QQueue <QString> SensorQueue;
+    QMutex Smutex;
+    MyThread *sthread;
 
 
     void UpdateSensor();
@@ -30,6 +30,4 @@ private:
 #endif // MAINWINDOW_H
 
 
-QQueue <QPair<QString,QString>>* DataQueue;
-QWaitCondition* EmptyQueue;
-QMutex* Mutex;
+

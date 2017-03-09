@@ -23,6 +23,7 @@ class MyThread : public QThread
 
     signals:
         void QueueEmpty();
+        void StartRead();
 
     private:
         QQueue <QString>* DataQueue;

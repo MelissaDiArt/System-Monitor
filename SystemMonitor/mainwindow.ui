@@ -18,7 +18,7 @@
     <item>
      <widget class="QTabWidget" name="tabWidget">
       <property name="currentIndex">
-       <number>2</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="SensorTab">
        <attribute name="title">
@@ -101,7 +101,7 @@
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_5">
             <item>
-             <widget class="QTreeWidget" name="treeWidget">
+             <widget class="QTreeWidget" name="ProcessTreeWidget">
               <property name="columnCount">
                <number>2</number>
               </property>

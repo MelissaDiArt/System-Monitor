@@ -12,13 +12,15 @@ void MyThread::run()
 {
     while(!false){
 
+        emit StartRead();
         QString path("/sys/class/hwmon");
         QStringList sfilter; //Lista de filtros
         sfilter << "hwmon*";
         QDir* sdir = new QDir(path);
         QStringList sdirectories = sdir->entryList(sfilter); //Lista de directorios
 
-        for (int i=0;i<sdirectories.size();i++){
+        for (int i=0;i<sdirectories.size();i++)
+        {
             QString sdirectoriespath = QString("%1/%2").arg(path).arg(sdirectories[i]);
             QDir* eachsdiresctories = new QDir(sdirectoriespath);
             sfilter.clear();
@@ -37,7 +39,8 @@ void MyThread::run()
             DataQueue->append(name);
             Mutex->unlock();
 
-            for(int j=0; j<files.size(); j++){
+            for(int j=0; j<files.size(); j++)
+            {
                 QString filepath = QString("%1/%2").arg(sdirectoriespath).arg(files[j]);
                 QFile file(filepath);
 

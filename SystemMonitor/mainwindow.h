@@ -2,6 +2,13 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QDebug>
+#include <QThreadPool>
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QProcess>
+#include <QTimer>
+#include <QtConcurrent/QtConcurrentRun>
 
 #include "mythread.h"
 
@@ -23,8 +30,24 @@ private:
     QMutex Smutex;
     MyThread *sthread;
 
+    QTimer fsectimer;
+    QTimer stimer;
+
+    struct Proc {
+        QString PID;
+        QString Cmdline;
+        QString Name;
+        QString State;
+        QString Threads;
+    };
+
 
     void UpdateSensor();
+    void UpdateProcess();
+    MainWindow::Proc PProperties(QString path, QString ppid);
+    void PShow();
+
+
 };
 
 #endif // MAINWINDOW_H

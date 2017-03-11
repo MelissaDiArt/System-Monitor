@@ -30,7 +30,7 @@ signals:
     void lshwStart();
 
 private slots:
-    void UpdateHardware(QByteArray &Output);
+    void UpdateHardware(QByteArray Output);
 
 private:
     Ui::MainWindow *ui;

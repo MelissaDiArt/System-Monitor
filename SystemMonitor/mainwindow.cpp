@@ -23,11 +23,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //Hardware
 
+    qRegisterMetaType<QByteArray>("QByteArray");
     QObject::connect(this,&MainWindow::lshwStart,&lshw_,&Lshw::lshwRead);
     QObject::connect(&lshw_,&Lshw::readFinished,this,&MainWindow::UpdateHardware);
 
     lshw_.moveToThread(&lshwThread);
     lshwThread.start();
+    emit lshwStart();
 }
 
 MainWindow::~MainWindow()
@@ -72,7 +74,7 @@ void MainWindow::UpdateProcess()
     }
 }
 
-void MainWindow::UpdateHardware(QByteArray &Output)
+void MainWindow::UpdateHardware(QByteArray Output)
 {
     QJsonModel* model = new QJsonModel;
     model->loadJson(Output);

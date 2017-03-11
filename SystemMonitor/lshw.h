@@ -1,18 +1,23 @@
 #ifndef LSHW_H
 #define LSHW_H
 
+#include <QObject>
+#include <QProcess>
 
 class Lshw : public QObject
 {
+    Q_OBJECT
 
 public:
     Lshw();
     ~Lshw();
+
 signals:
-    void readFinished(QByteArray &Output);
+    void readFinished(QByteArray Output);
 
 public slots:
     void lshwRead();
+
 private:
     QProcess *myProcess;
 };

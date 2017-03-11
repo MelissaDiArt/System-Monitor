@@ -8,6 +8,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     //Sensores
     sthread = new MyThread(SensorQueue,Smutex);
+    //Onjeto, señal, objeto, slot
     QObject::connect(sthread,&MyThread::QueueEmpty,this,&MainWindow::UpdateSensor);
     QObject::connect(sthread,&MyThread::StartRead,ui->SensorLabel,&QLabel::clear);
     sthread->start();
@@ -20,10 +21,13 @@ MainWindow::MainWindow(QWidget *parent) :
     QObject::connect(&fsectimer, &QTimer::timeout, this, &MainWindow::UpdateProcess);
     ui->ProcessTreeWidget->sortByColumn(1, Qt::AscendingOrder);
 
-
     //Hardware
 
+    QObject::connect(this,&MainWindow::lshwStart,&lshw_,&Lshw::lshwRead);
+    QObject::connect(&lshw_,&Lshw::readFinished,this,&MainWindow::UpdateHardware);
 
+    lshw_.moveToThread(&lshwThread);
+    lshwThread.start();
 }
 
 MainWindow::~MainWindow()
@@ -31,6 +35,8 @@ MainWindow::~MainWindow()
     delete ui;
     sthread->wait();
     delete sthread;
+    lshwThread.quit();
+    lshwThread.wait();
 }
 
 void MainWindow::UpdateSensor()
@@ -64,6 +70,14 @@ void MainWindow::UpdateProcess()
         aux->setFuture(aux1);
 
     }
+}
+
+void MainWindow::UpdateHardware(QByteArray &Output)
+{
+    QJsonModel* model = new QJsonModel;
+    model->loadJson(Output);
+    ui->HardwareTreeView->setModel(model);
+
 }
 
 MainWindow::Proc MainWindow::PProperties(QString path, QString ppid)
@@ -105,7 +119,6 @@ MainWindow::Proc MainWindow::PProperties(QString path, QString ppid)
 
                 }else if(aux.startsWith("/")){
 
-                //    aux.replace('\000',"");
                     result.Cmdline = QString(aux);
 
                 }else if(aux == ""){

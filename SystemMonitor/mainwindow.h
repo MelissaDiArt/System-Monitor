@@ -11,6 +11,8 @@
 #include <QtConcurrent/QtConcurrentRun>
 
 #include "mythread.h"
+#include "lshw.h"
+#include "qjsonmodel.h"
 
 namespace Ui {
 class MainWindow;
@@ -24,6 +26,12 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+signals:
+    void lshwStart();
+
+private slots:
+    void UpdateHardware(QByteArray &Output);
+
 private:
     Ui::MainWindow *ui;
     QQueue <QString> SensorQueue;
@@ -32,6 +40,9 @@ private:
 
     QTimer fsectimer;
     QTimer stimer;
+
+    QThread lshwThread;
+    Lshw lshw_;
 
     struct Proc {
         QString PID;
@@ -46,6 +57,7 @@ private:
     void UpdateProcess();
     MainWindow::Proc PProperties(QString path, QString ppid);
     void PShow();
+    void ReadOutput();
 
 
 };

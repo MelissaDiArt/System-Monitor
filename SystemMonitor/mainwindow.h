@@ -14,6 +14,7 @@
 #include "mythread.h"
 #include "lshw.h"
 #include "qjsonmodel.h"
+#include "cpu.h"
 
 namespace Ui {
 class MainWindow;
@@ -29,9 +30,14 @@ public:
 
 signals:
     void lshwStart();
+    void cpuStart();
 
 private slots:
+    void UpdateSensor();
+    void UpdateProcess();
+    void PShow();
     void UpdateHardware(QByteArray Output);
+    void UpdateCpu(QString Output);
 
 private:
     Ui::MainWindow *ui;
@@ -44,6 +50,9 @@ private:
     QThread lshwThread;
     Lshw lshw_;
 
+    QThread cpuThread;
+    Cpu cpu_;
+
     struct Proc {
         QString PID;
         QString Cmdline;
@@ -52,15 +61,7 @@ private:
         QString Threads;
     };
 
-    void UpdateSensor();
-
-    void UpdateProcess();
     MainWindow::Proc PProperties(QString path, QString ppid);
-    void PShow();
-
-    void ReadOutput();
-
-
 };
 
 #endif // MAINWINDOW_H

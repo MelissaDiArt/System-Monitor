@@ -27,11 +27,13 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     mythread.cpp \
     lshw.cpp \
-    qjsonmodel.cpp
+    qjsonmodel.cpp \
+    cpu.cpp
 
 HEADERS  += mainwindow.h \
     mythread.h \
     lshw.h \
-    qjsonmodel.h
+    qjsonmodel.h \
+    cpu.h
 
 FORMS    += mainwindow.ui

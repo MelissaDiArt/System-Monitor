@@ -9,7 +9,7 @@ class Lshw : public QObject
     Q_OBJECT
 
 public:
-    Lshw();
+    explicit Lshw(QObject *parent = 0);
     ~Lshw();
 
 signals:

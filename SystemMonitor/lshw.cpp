@@ -1,6 +1,6 @@
 #include "lshw.h"
 
-Lshw::Lshw()
+Lshw::Lshw(QObject *parent) : QObject(parent)
 {
     myProcess = new QProcess(this);
     myProcess->start("/usr/bin/lshw -json");

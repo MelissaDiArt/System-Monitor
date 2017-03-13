@@ -26,10 +26,19 @@ MainWindow::MainWindow(QWidget *parent) :
     qRegisterMetaType<QByteArray>("QByteArray");
     QObject::connect(this,&MainWindow::lshwStart,&lshw_,&Lshw::lshwRead);
     QObject::connect(&lshw_,&Lshw::readFinished,this,&MainWindow::UpdateHardware);
-
     lshw_.moveToThread(&lshwThread);
     lshwThread.start();
     emit lshwStart();
+
+    //Cpu
+
+    QObject::connect(this, &MainWindow::cpuStart, &cpu_, &Cpu::cpuRead);
+    QObject::connect(&cpu_, &Cpu::readFinished, this, &MainWindow::UpdateCpu);
+    cpu_.moveToThread(&cpuThread);
+    cpuThread.start();
+    emit cpuStart();
+
+
 }
 
 MainWindow::~MainWindow()
@@ -38,6 +47,8 @@ MainWindow::~MainWindow()
     delete sthread;
     lshwThread.quit();
     lshwThread.wait();
+    cpuThread.quit();
+    cpuThread.wait();
 }
 
 void MainWindow::UpdateSensor()
@@ -199,6 +210,12 @@ void MainWindow::UpdateHardware(QByteArray Output)
     model->loadJson(Output);
     ui->HardwareTreeView->setModel(model);
 
+}
+
+
+void MainWindow::UpdateCpu(QString Output)
+{
+        ui->CPULabel->setText(Output);
 }
 
 

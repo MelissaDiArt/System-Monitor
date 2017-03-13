@@ -6,20 +6,20 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
     //Sensores
     sthread = new MyThread(SensorQueue,Smutex);
-    //Onjeto, señal, objeto, slot
+    //Objeto, señal, objeto, slot
     QObject::connect(sthread,&MyThread::QueueEmpty,this,&MainWindow::UpdateSensor);
     QObject::connect(sthread,&MyThread::StartRead,ui->SensorLabel,&QLabel::clear);
     sthread->start();
 
     //Procesos
 
-    fsectimer.start();
-    stimer.setInterval(4000);
-
-    QObject::connect(&fsectimer, &QTimer::timeout, this, &MainWindow::UpdateProcess);
-    ui->ProcessTreeWidget->sortByColumn(1, Qt::AscendingOrder);
+     fsectimer.setInterval(5000);
+     fsectimer.start();
+     QObject::connect(&fsectimer, &QTimer::timeout, this, &MainWindow::UpdateProcess);
+     ui->ProcessTreeWidget->sortByColumn(1, Qt::AscendingOrder);
 
     //Hardware
 
@@ -35,7 +35,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
-    sthread->wait();
     delete sthread;
     lshwThread.quit();
     lshwThread.wait();
@@ -56,6 +55,7 @@ void MainWindow::UpdateSensor()
 
 }
 
+
 void MainWindow::UpdateProcess()
 {
     QString path("/proc");
@@ -63,6 +63,7 @@ void MainWindow::UpdateProcess()
     QStringList pfilter;
     pfilter << "[0-9]*";
     QStringList pdirectories = pdir->entryList(pfilter);
+    delete pdir;
 
     for(int i=0; i<pdirectories.size();i++)
     {
@@ -70,17 +71,9 @@ void MainWindow::UpdateProcess()
         QObject::connect(aux, &QFutureWatcher<Proc>::finished, this, &MainWindow::PShow);
         QFuture<Proc> aux1 = QtConcurrent::run(this, &MainWindow::PProperties,path,pdirectories[i]);
         aux->setFuture(aux1);
-
     }
 }
 
-void MainWindow::UpdateHardware(QByteArray Output)
-{
-    QJsonModel* model = new QJsonModel;
-    model->loadJson(Output);
-    ui->HardwareTreeView->setModel(model);
-
-}
 
 MainWindow::Proc MainWindow::PProperties(QString path, QString ppid)
 {
@@ -113,11 +106,9 @@ MainWindow::Proc MainWindow::PProperties(QString path, QString ppid)
 
                     result.PID = QString(aux).remove(0,6).remove(result.PID.size()-1,1);
 
-
                 }else if(aux.startsWith("Threads:")){
 
                     result.Threads = QString(aux).remove(0,9).remove(result.Threads.size()-1,1);
-
 
                 }else if(aux.startsWith("/")){
 
@@ -132,29 +123,41 @@ MainWindow::Proc MainWindow::PProperties(QString path, QString ppid)
     }
 
     return result;
+
 }
+
 
 void MainWindow::PShow()
 {
+
     QFutureWatcher<Proc> *watcher = static_cast< QFutureWatcher<Proc>* >(sender());
 
     if(watcher){
 
         QFuture<Proc> future = watcher->future();
         Proc result = future.result();
+        QTimer* stimer = new QTimer;
+        stimer->setInterval(9990);
 
         QList<QTreeWidgetItem *> items = ui->ProcessTreeWidget->findItems(result.PID, Qt::MatchFixedString, 1);
         QTreeWidgetItem *process;
 
         if(!items.isEmpty()){
+
             process = new QTreeWidgetItem();
+
         }else{
+
             process = new QTreeWidgetItem(ui->ProcessTreeWidget);
         }
 
-        QObject::connect(&stimer, &QTimer::timeout, this, [=](){
+        QObject::connect(stimer, &QTimer::timeout, this, [=](){
+
              delete process;
+             stimer->deleteLater();
         });
+
+        stimer->start();
 
         process->setText(0,result.Name);
         process->setText(1,result.PID);
@@ -186,6 +189,15 @@ void MainWindow::PShow()
 
         watcher->deleteLater();
     }
+
+}
+
+
+void MainWindow::UpdateHardware(QByteArray Output)
+{
+    QJsonModel* model = new QJsonModel(this);
+    model->loadJson(Output);
+    ui->HardwareTreeView->setModel(model);
 
 }
 

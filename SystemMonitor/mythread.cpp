@@ -18,6 +18,7 @@ void MyThread::run()
         sfilter << "hwmon*";
         QDir* sdir = new QDir(path);
         QStringList sdirectories = sdir->entryList(sfilter); //Lista de directorios
+        delete sdir;
 
         for (int i=0;i<sdirectories.size();i++)
         {
@@ -38,6 +39,7 @@ void MyThread::run()
             Mutex->lock();
             DataQueue->append(name);
             Mutex->unlock();
+            delete eachsdiresctories;
 
             for(int j=0; j<files.size(); j++)
             {
@@ -57,6 +59,7 @@ void MyThread::run()
                     DataQueue->append(aux);
                     Mutex->unlock();
                 }
+
             }
 
             emit QueueEmpty();
@@ -64,6 +67,7 @@ void MyThread::run()
 
         this->sleep(1);
     }
+
 }
 
 

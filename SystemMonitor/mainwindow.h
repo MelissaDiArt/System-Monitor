@@ -8,6 +8,7 @@
 #include <QFutureWatcher>
 #include <QProcess>
 #include <QTimer>
+#include <QPair>
 #include <QtConcurrent/QtConcurrentRun>
 
 #include "mythread.h"
@@ -39,7 +40,6 @@ private:
     MyThread *sthread;
 
     QTimer fsectimer;
-    QTimer stimer;
 
     QThread lshwThread;
     Lshw lshw_;
@@ -52,11 +52,12 @@ private:
         QString Threads;
     };
 
-
     void UpdateSensor();
+
     void UpdateProcess();
     MainWindow::Proc PProperties(QString path, QString ppid);
     void PShow();
+
     void ReadOutput();
 
 

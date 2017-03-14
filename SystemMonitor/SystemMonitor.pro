@@ -28,12 +28,16 @@ SOURCES += main.cpp\
     mythread.cpp \
     lshw.cpp \
     qjsonmodel.cpp \
-    cpu.cpp
+    cpu.cpp \
+    netstat.cpp \
+    sistemuser.cpp
 
 HEADERS  += mainwindow.h \
     mythread.h \
     lshw.h \
     qjsonmodel.h \
-    cpu.h
+    cpu.h \
+    netstat.h \
+    sistemuser.h
 
 FORMS    += mainwindow.ui

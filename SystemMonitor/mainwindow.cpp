@@ -38,6 +38,21 @@ MainWindow::MainWindow(QWidget *parent) :
     cpuThread.start();
     emit cpuStart();
 
+    //Netstat
+
+    QObject::connect(this,&MainWindow::netstatStart,&netstat_,&Netstat::netstatRead);
+    QObject::connect(&netstat_,&Netstat::readFinished,this,&MainWindow::UpdateNetstat);
+    netstat_.moveToThread(&netsatThread);
+    netsatThread.start();
+    emit netstatStart();
+
+    //User
+
+    QObject::connect(this,&MainWindow::sistemUserStart,&sistemUser_,&SistemUser::sistemUserRead);
+    QObject::connect(&sistemUser_,&SistemUser::readFinished,this,&MainWindow::UpdateSistemUser);
+    sistemUser_.moveToThread(&sistemUserThread);
+    sistemUserThread.start();
+    emit sistemUserStart();
 
 }
 
@@ -45,10 +60,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
     delete sthread;
-    lshwThread.quit();
-    lshwThread.wait();
-    cpuThread.quit();
-    cpuThread.wait();
 }
 
 void MainWindow::UpdateSensor()
@@ -215,7 +226,18 @@ void MainWindow::UpdateHardware(QByteArray Output)
 
 void MainWindow::UpdateCpu(QString Output)
 {
-        ui->CPULabel->setText(Output);
+    ui->CPULabel->setText(Output);
+}
+
+
+void MainWindow::UpdateNetstat(QString Output)
+{
+    ui->NetstatLabel->setText(Output);
+}
+
+void MainWindow::UpdateSistemUser(QString Output)
+{
+    ui->UserLabel->setText(Output);
 }
 
 

@@ -15,6 +15,8 @@
 #include "lshw.h"
 #include "qjsonmodel.h"
 #include "cpu.h"
+#include "netstat.h"
+#include "sistemuser.h"
 
 namespace Ui {
 class MainWindow;
@@ -31,6 +33,8 @@ public:
 signals:
     void lshwStart();
     void cpuStart();
+    void netstatStart();
+    void sistemUserStart();
 
 private slots:
     void UpdateSensor();
@@ -38,6 +42,8 @@ private slots:
     void PShow();
     void UpdateHardware(QByteArray Output);
     void UpdateCpu(QString Output);
+    void UpdateNetstat(QString Output);
+    void UpdateSistemUser(QString Output);
 
 private:
     Ui::MainWindow *ui;
@@ -52,6 +58,12 @@ private:
 
     QThread cpuThread;
     Cpu cpu_;
+
+    QThread netsatThread;
+    Netstat netstat_;
+
+    QThread sistemUserThread;
+    SistemUser sistemUser_;
 
     struct Proc {
         QString PID;

@@ -4,6 +4,7 @@
 
 #include <QObject>
 #include <QProcess>
+#include <QMessageBox>
 
 class Netstat : public QObject
 {

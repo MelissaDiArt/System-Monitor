@@ -9,6 +9,7 @@
 #include <QMutex>
 #include <QDir>
 #include <QFile>
+#include <QMessageBox>
 
 
 class MyThread : public QThread

@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QProcess>
+#include <QMessageBox>
 
 class Lshw : public QObject
 {

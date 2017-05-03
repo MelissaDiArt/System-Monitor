@@ -4,6 +4,8 @@
 
 #include <QObject>
 #include <QProcess>
+#include <QMessageBox>
+
 
 class SistemUser : public QObject
 {

@@ -10,6 +10,7 @@
 #include <QTimer>
 #include <QPair>
 #include <QtConcurrent/QtConcurrentRun>
+#include <QMessageBox>
 
 #include "mythread.h"
 #include "lshw.h"

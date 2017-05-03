@@ -13,7 +13,9 @@ Cpu::~Cpu()
 void Cpu::cpuRead()
 {
     QByteArray output;
-    file->open(QIODevice::ReadOnly);
+    if(file->open(QIODevice::ReadOnly)){
+
     output = file->readAll();
     emit readFinished(output);
+    }
 }

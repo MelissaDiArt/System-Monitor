@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QProcess>
 #include <QFile>
+#include <QMessageBox>
 
 class Cpu : public QObject
 {

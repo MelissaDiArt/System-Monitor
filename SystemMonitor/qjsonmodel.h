@@ -31,6 +31,7 @@
 #include <QJsonArray>
 #include <QJsonObject>
 #include <QIcon>
+#include <QMessageBox>
 
 class QJsonModel;
 class QJsonItem;

@@ -13,8 +13,17 @@ Lshw::~Lshw()
 
 void Lshw::lshwRead()
 {
-    myProcess->waitForReadyRead();
-    QByteArray aux;
-    aux = myProcess->readAllStandardOutput();
-    emit readFinished(aux);
+    if(myProcess->waitForStarted()){
+        myProcess->waitForReadyRead();
+        QByteArray aux;
+        aux = myProcess->readAllStandardOutput();
+        emit readFinished(aux);
+
+    } else {
+
+        QByteArray out;
+        out = "Lshw error: ";
+        out.append(myProcess->errorString());
+        emit readFinished(out);
+    }
 }

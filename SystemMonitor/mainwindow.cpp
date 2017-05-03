@@ -217,27 +217,46 @@ void MainWindow::PShow()
 
 void MainWindow::UpdateHardware(QByteArray Output)
 {
-    QJsonModel* model = new QJsonModel(this);
-    model->loadJson(Output);
-    ui->HardwareTreeView->setModel(model);
-
+    if(Output.startsWith("Lshw error")){
+        QMessageBox::warning(this, tr("Error"), Output , QMessageBox::Ok);
+        ui->HardwareTreeView->deleteLater();
+    } else {
+        QJsonModel* model = new QJsonModel(this);
+        model->loadJson(Output);
+        ui->HardwareTreeView->setModel(model);
+    }
 }
 
 
 void MainWindow::UpdateCpu(QString Output)
 {
-    ui->CPULabel->setText(Output);
+    if(Output.startsWith("Cpu Info error")){
+            QMessageBox::warning(this, "Error", Output , QMessageBox::Ok);
+            ui->CPULabel->setText("Can not read CPU info");
+        }else{
+            ui->CPULabel->setText(Output);
+    }
 }
 
 
 void MainWindow::UpdateNetstat(QString Output)
 {
-    ui->NetstatLabel->setText(Output);
+    if(Output.startsWith("Netstat error")){
+        QMessageBox::warning(this, tr("Error"), Output , QMessageBox::Ok);
+        ui->NetstatLabel->setText("Can not read Netstat info");
+    } else {
+        ui->NetstatLabel->setText(Output);
+    }
 }
 
 void MainWindow::UpdateSistemUser(QString Output)
 {
-    ui->UserLabel->setText(Output);
+    if(Output.startsWith("User error")){
+        QMessageBox::warning(this, tr("Error"), Output, QMessageBox::Ok);
+        ui->UserLabel->setText("Can not read Sistem User");
+    } else {
+        ui->UserLabel->setText(Output);
+    }
 }
 
 

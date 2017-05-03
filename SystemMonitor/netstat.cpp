@@ -13,8 +13,17 @@ Netstat::~Netstat()
 
 void Netstat::netstatRead()
 {
-    myProcess->waitForReadyRead();
-    QByteArray aux;
-    aux = myProcess->readAllStandardOutput();
-    emit readFinished(aux);
+    if(myProcess->waitForStarted()){
+
+        myProcess->waitForReadyRead();
+        QByteArray aux;
+        aux = myProcess->readAllStandardOutput();
+        emit readFinished(aux);
+    } else {
+
+        QByteArray out;
+        out = "Netstat error ";
+        out.append(myProcess->errorString());
+        emit readFinished(out);
+    }
 }
